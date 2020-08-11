@@ -1,0 +1,21 @@
+version: '3.1'
+
+services:
+  db:
+    image: postgres
+    ports:
+      - 5432:5432
+    restart: always
+    environment:
+      POSTGRES_DB: chotodb
+      POSTGRES_PASSWORD: sadat@642
+      POSTGRES_USER: root
+    volumes:
+      - "./storage/pg/:/var/lib/postgresql/data/"
+
+  adminer:
+    image: adminer
+    container_name: adminerpg
+    restart: always
+    ports:
+      - 8001:8080

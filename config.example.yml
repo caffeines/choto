@@ -1,0 +1,15 @@
+app:
+  host: 0.0.0.0
+  port: 4141
+  log_level: debug
+  jwt_key: secretKey
+
+database:
+  host: 0.0.0.0
+  port: 5432
+  username: root
+  password: password
+  name: chotodb
+  max_idle_connections: 10
+  max_active_connections: 30
+  max_connection_lifetime: 10
