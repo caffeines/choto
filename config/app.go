@@ -18,6 +18,9 @@ func App() *Application {
 
 // LoadApp loads application configuration
 func LoadApp() {
+	mu.Lock()
+	defer mu.Unlock()
+
 	app = Application{
 		Base:      viper.GetString("app.host"),
 		Port:      viper.GetInt("app.port"),
