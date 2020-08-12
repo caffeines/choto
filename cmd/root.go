@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/caffeines/choto/app"
 	"github.com/caffeines/choto/config"
 	"github.com/caffeines/choto/log"
 	"github.com/spf13/cobra"
@@ -30,6 +31,11 @@ func Execute() {
 		fmt.Println("Failed to read config: ", err)
 		os.Exit(1)
 	}
+	if err := app.ConnectSQLDB(); err != nil {
+		fmt.Println("Failed to connect SQLDB: ", err)
+		os.Exit(1)
+	}
+
 	if err := RootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
