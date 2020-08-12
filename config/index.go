@@ -19,5 +19,6 @@ func LoadConfig() error {
 		return err
 	}
 	LoadApp()
+	LoadDB()
 	return nil
 }

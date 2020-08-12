@@ -1,7 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"github.com/caffeines/choto/cmd"
+)
 
 func main() {
-	fmt.Println("Hola")
+	cmd.Execute()
 }
