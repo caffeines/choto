@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/caffeines/choto/config"
+	"github.com/caffeines/choto/log"
 	"github.com/spf13/cobra"
 )
 
@@ -23,6 +24,8 @@ func init() {
 
 // Execute cmd...
 func Execute() {
+	log.SetupLog()
+
 	if err := config.LoadConfig(); err != nil {
 		fmt.Println("Failed to read config: ", err)
 		os.Exit(1)
