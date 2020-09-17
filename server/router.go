@@ -10,6 +10,7 @@ import (
 // GetRouter ...
 func GetRouter() *mux.Router {
 	r := mux.NewRouter()
-	r.HandleFunc("/", api.CreateShortURL).Methods(http.MethodPost)
+	postRoute := r.Methods(http.MethodPost).Subrouter()
+	postRoute.HandleFunc("/hello", api.CreateShortURL)
 	return r
 }

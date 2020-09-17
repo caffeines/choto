@@ -3,7 +3,9 @@ module github.com/caffeines/choto
 go 1.14
 
 require (
+	github.com/fatih/color v1.7.0
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
+	github.com/gorilla/handlers v1.5.1 // indirect
 	github.com/gorilla/mux v1.8.0
 	github.com/jinzhu/gorm v1.9.15
 	github.com/labstack/echo v3.3.10+incompatible
