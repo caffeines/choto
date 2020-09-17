@@ -12,17 +12,6 @@ services:
       POSTGRES_USER: root
     volumes:
       - "pgvol:/var/lib/postgresql/data"
-  pgAdmin:
-    restart: always
-    image: dpage/pgadmin4
-    ports:
-        - "8001:80"
-    environment:
-        PGADMIN_DEFAULT_EMAIL: admin@admin.com
-        PGADMIN_DEFAULT_PASSWORD: 1234
-    volumes:
-        - pgadmin:/var/lib/pgadmin
   
 volumes:
   pgvol:
-  pgadmin:

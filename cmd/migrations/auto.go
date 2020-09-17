@@ -19,7 +19,7 @@ func auto(cmd *cobra.Command, args []string) {
 	tx := app.DB().Begin()
 
 	var tables []core.Table
-	tables = append(tables, &models.Url{})
+	tables = append(tables, &models.URL{})
 
 	for _, t := range tables {
 		if err := tx.AutoMigrate(t).Error; err != nil {
