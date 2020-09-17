@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/caffeines/choto/log"
 	"github.com/fatih/color"
 )
 
@@ -24,7 +25,8 @@ func Response() *response {
 }
 
 func printRequest(resp response, r *http.Request) {
-	fmt.Print(time.Now().Format("2006-01-02 15:04:05.000"))
+	now := time.Now().Format("2006-01-02 15:04:05.000")
+	fmt.Print(now)
 	FgCyan := color.New(color.FgCyan, color.Bold)
 	FgCyan.Printf(" - %s ", r.Method)
 	fmt.Print(r.RequestURI)
@@ -36,8 +38,10 @@ func printRequest(resp response, r *http.Request) {
 		FgRed.Printf(" %d", resp.Status)
 	}
 	FgHiYellow := color.New(color.Bold, color.FgHiYellow)
-	FgHiYellow.Println(" ~ ", time.Since(resp.StartTime))
-
+	duration := time.Since(resp.StartTime)
+	FgHiYellow.Println(" ~ ", duration)
+	respLog := fmt.Sprintf("%s - %s %s %d ~ %v", now, r.Method, r.RequestURI, resp.Status, duration)
+	log.Log().Infoln(respLog)
 }
 
 // SendResponse ...

@@ -5,10 +5,10 @@ import (
 	"net/http"
 
 	"github.com/caffeines/choto/lib"
+	"github.com/caffeines/choto/log"
 
 	"github.com/caffeines/choto/app"
 	"github.com/caffeines/choto/data"
-	"github.com/caffeines/choto/log"
 
 	"github.com/caffeines/choto/models"
 
@@ -20,7 +20,6 @@ func createURL(url models.URL) error {
 	urlRepo := data.NewURLRepository()
 	err := urlRepo.CreateURL(db, &url)
 	if err != nil {
-		log.Log().Errorln(err)
 		db.Rollback()
 		return err
 	}
@@ -33,22 +32,39 @@ func createURL(url models.URL) error {
 // CreateShortURL ...
 func CreateShortURL(w http.ResponseWriter, r *http.Request) {
 	resp := core.Response()
-	url := models.URL{ID: lib.RandStringRunes(6)}
+	url := models.URL{}
 
 	if err := json.NewDecoder(r.Body).Decode(&url); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	err := createURL(url)
-	if _, isIt := lib.IsDuplicateKeyError(err); isIt {
+	var isUserDefinedID bool
+	if len(url.ID) == 0 {
 		url.ID = lib.RandStringRunes(6)
+	} else {
+		isUserDefinedID = true
+	}
+	var err error
+	for {
 		err = createURL(url)
+		if _, isIt := lib.IsDuplicateKeyError(err); isIt {
+			if isUserDefinedID {
+				resp.Title = "This id already taken"
+				resp.Status = http.StatusConflict
+				resp.Errors = err
+				resp.SendResponse(w, r)
+				return
+			}
+			url.ID = lib.RandStringRunes(6)
+		} else {
+			break
+		}
 	}
 	if err != nil {
+		log.Log().Errorln(err)
 		resp.Title = "Database query failed"
 		resp.Status = http.StatusInternalServerError
 		resp.Errors = err
-		resp.Data = nil
 		resp.SendResponse(w, r)
 		return
 	}
