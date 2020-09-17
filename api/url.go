@@ -15,26 +15,40 @@ import (
 	"github.com/caffeines/choto/core"
 )
 
+func createURL(url models.URL) error {
+	db := app.DB().Begin()
+	urlRepo := data.NewURLRepository()
+	err := urlRepo.CreateURL(db, &url)
+	if err != nil {
+		log.Log().Errorln(err)
+		db.Rollback()
+		return err
+	}
+	if err := db.Commit().Error; err != nil {
+		return err
+	}
+	return nil
+}
+
 // CreateShortURL ...
 func CreateShortURL(w http.ResponseWriter, r *http.Request) {
 	resp := core.Response()
-	url := models.URL{}
+	url := models.URL{ID: lib.RandStringRunes(6)}
 
 	if err := json.NewDecoder(r.Body).Decode(&url); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	db := app.DB().Begin()
-
-	urlRepo := data.NewURLRepository()
-	url.ID = lib.RandStringRunes(6)
-	err := urlRepo.CreateURL(db, &url)
+	err := createURL(url)
+	if _, isIt := lib.IsDuplicateKeyError(err); isIt {
+		url.ID = lib.RandStringRunes(6)
+		err = createURL(url)
+	}
 	if err != nil {
-		db.Rollback()
-		log.Log().Errorln(err)
-		resp.Title = "Failed to create URL"
+		resp.Title = "Database query failed"
 		resp.Status = http.StatusInternalServerError
 		resp.Errors = err
+		resp.Data = nil
 		resp.SendResponse(w, r)
 		return
 	}

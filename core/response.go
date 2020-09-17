@@ -44,10 +44,10 @@ func printRequest(resp response, r *http.Request) {
 func (r response) SendResponse(w http.ResponseWriter, req *http.Request) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(r.Status)
-	if err := json.NewEncoder(w).Encode(r.Data); err != nil {
+	printRequest(r, req)
+	if err := json.NewEncoder(w).Encode(r); err != nil {
 		printRequest(response{Status: http.StatusInternalServerError}, req)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-	printRequest(r, req)
 	return nil
 }
