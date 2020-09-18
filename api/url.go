@@ -130,7 +130,7 @@ func GetShortURL(w http.ResponseWriter, r *http.Request) {
 	resp.SendResponse(w, r)
 }
 
-// Match URL password and send id
+// MatchURLPassword will match URL password and send id
 func MatchURLPassword(w http.ResponseWriter, r *http.Request) {
 	ru := models.URL{}
 	resp := core.Response()
