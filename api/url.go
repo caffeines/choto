@@ -91,7 +91,14 @@ func CreateShortURL(w http.ResponseWriter, r *http.Request) {
 	resp.SendResponse(w, r)
 }
 
-func GetShortUrl(w http.ResponseWriter, r *http.Request) {
+type URLResponse struct {
+	ID          string `json:"id"`
+	Link        string `json:"link,omitempty"`
+	IsProtected bool   `json:"isProtected"`
+}
+
+// GetShortURL ...
+func GetShortURL(w http.ResponseWriter, r *http.Request) {
 	resp := core.Response()
 	vars := mux.Vars(r)
 	id := vars["id"]
@@ -113,10 +120,53 @@ func GetShortUrl(w http.ResponseWriter, r *http.Request) {
 		resp.SendResponse(w, r)
 		return
 	}
-	resp.Data = map[string]interface{}{
-		"id":        url.ID,
-		"isPrivate": len(url.Password) > 0,
+	isPrivate := len(url.Password) > 0
+	urlResp := URLResponse{ID: url.ID, IsProtected: isPrivate}
+	if !isPrivate {
+		urlResp.Link = url.Link
 	}
+	resp.Data = urlResp
 	resp.Status = http.StatusOK
 	resp.SendResponse(w, r)
+}
+
+// Match URL password and send id
+func MatchURLPassword(w http.ResponseWriter, r *http.Request) {
+	ru := models.URL{}
+	resp := core.Response()
+	if err := json.NewDecoder(r.Body).Decode(&ru); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	db := app.DB()
+	urlRepo := data.NewURLRepository()
+	url, err := urlRepo.GetURLByID(db, ru.ID)
+
+	if err != nil {
+		if isNotFound := lib.IsRecordNotFoundError(err); isNotFound {
+			resp.Title = "Invalid short URL"
+			resp.Status = http.StatusNotFound
+			resp.SendResponse(w, r)
+			return
+		}
+		log.Log().Errorln(err)
+		resp.Title = "Database query failed"
+		resp.Status = http.StatusInternalServerError
+		resp.Errors = err
+		resp.SendResponse(w, r)
+		return
+	}
+	if err := lib.CheckPassword(url.Password, ru.Password); err != nil {
+		log.Log().Errorln(err)
+		resp.Title = "Password not match"
+		resp.Status = http.StatusUnauthorized
+		resp.Errors = err
+		resp.SendResponse(w, r)
+		return
+	}
+	isPrivate := len(url.Password) > 0
+	resp.Data = URLResponse{ID: url.ID, IsProtected: isPrivate, Link: url.Link}
+	resp.Status = http.StatusOK
+	resp.SendResponse(w, r)
+
 }

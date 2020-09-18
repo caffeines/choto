@@ -12,6 +12,11 @@ services:
       POSTGRES_USER: root
     volumes:
       - "pgvol:/var/lib/postgresql/data"
-  
+  adminer:
+    image: adminer
+    container_name: choto_adminer
+    restart: always
+    ports:
+      - 8001:8080
 volumes:
   pgvol:

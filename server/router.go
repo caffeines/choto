@@ -13,6 +13,8 @@ func GetRouter() *mux.Router {
 	postRoute := r.Methods(http.MethodPost).Subrouter()
 	getRoute := r.Methods(http.MethodGet).Subrouter()
 	postRoute.HandleFunc("/api", api.CreateShortURL)
-	getRoute.HandleFunc("/api/{id}", api.GetShortUrl)
+	postRoute.HandleFunc("/api/match-password", api.MatchURLPassword)
+	getRoute.HandleFunc("/api/{id}", api.GetShortURL)
+
 	return r
 }
