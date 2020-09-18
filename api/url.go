@@ -46,6 +46,18 @@ func CreateShortURL(w http.ResponseWriter, r *http.Request) {
 	} else {
 		isUserDefinedID = true
 	}
+	if len(url.Password) > 0 {
+		hashPass, err := lib.HashPassword(url.Password)
+		if err != nil {
+			log.Log().Errorln(err)
+			resp.Title = "Something went wrong"
+			resp.Status = http.StatusInternalServerError
+			resp.Errors = err
+			resp.SendResponse(w, r)
+			return
+		}
+		url.Password = hashPass
+	}
 	var err error
 	for {
 		err = createURL(url)
@@ -70,7 +82,11 @@ func CreateShortURL(w http.ResponseWriter, r *http.Request) {
 		resp.SendResponse(w, r)
 		return
 	}
-	resp.Data = url
+	resp.Data = map[string]interface{}{
+		"id":          url.ID,
+		"isProtected": len(url.Password) > 0,
+		"link":        url.Link,
+	}
 	resp.Status = http.StatusOK
 	resp.SendResponse(w, r)
 }
