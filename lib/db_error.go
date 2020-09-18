@@ -6,6 +6,9 @@ import (
 )
 
 func IsRecordNotFoundError(err error) bool {
+	if err == nil {
+		return false
+	}
 	return strings.Contains(err.Error(), "record not found")
 }
 

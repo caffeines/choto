@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/gorilla/mux"
+
 	"github.com/caffeines/choto/lib"
 	"github.com/caffeines/choto/log"
 
@@ -69,6 +71,36 @@ func CreateShortURL(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	resp.Data = url
+	resp.Status = http.StatusOK
+	resp.SendResponse(w, r)
+}
+
+func GetShortUrl(w http.ResponseWriter, r *http.Request) {
+	resp := core.Response()
+	vars := mux.Vars(r)
+	id := vars["id"]
+	db := app.DB()
+	urlRepo := data.NewURLRepository()
+	url, err := urlRepo.GetURLByID(db, id)
+
+	if err != nil {
+		if isNotFound := lib.IsRecordNotFoundError(err); isNotFound {
+			resp.Title = "Invalid short URL"
+			resp.Status = http.StatusNotFound
+			resp.SendResponse(w, r)
+			return
+		}
+		log.Log().Errorln(err)
+		resp.Title = "Database query failed"
+		resp.Status = http.StatusInternalServerError
+		resp.Errors = err
+		resp.SendResponse(w, r)
+		return
+	}
+	resp.Data = map[string]interface{}{
+		"id":        url.ID,
+		"isPrivate": len(url.Password) > 0,
+	}
 	resp.Status = http.StatusOK
 	resp.SendResponse(w, r)
 }
