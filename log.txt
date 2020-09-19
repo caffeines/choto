@@ -1,5 +1,6 @@
-time="2020-09-18T14:33:14+06:00" level=info msg="sql/home/caffeines/work/src/github.com/caffeines/choto/data/url_impl.go:311.559816msSELECT * FROM \"Urls\"  WHERE (id = $1) ORDER BY \"Urls\".\"id\" ASC LIMIT 1[4pmH3W] 1" source="gorm@v1.9.15/main.go:github.com/jinzhu/gorm.(*DB).print:873"
-time="2020-09-18T14:33:14+06:00" level=info msg="2020-09-18 14:33:14.227 - GET /api/4pmH3W 200 ~ 1.739627ms" source="core/response.go:github.com/caffeines/choto/core.printRequest:44"
+time="2020-09-18T15:03:08+06:00" level=error msg="http: Server closed" source="server/http.go:github.com/caffeines/choto/server.RunServer.func1:29"
+time="2020-09-18T15:03:08+06:00" level=info msg="gracefully shutting down" source="server/http.go:github.com/caffeines/choto/server.RunServer:41"
+="2020-09-18T14:33:14+06:00" level=info msg="2020-09-18 14:33:14.227 - GET /api/4pmH3W 200 ~ 1.739627ms" source="core/response.go:github.com/caffeines/choto/core.printRequest:44"
 time="2020-09-18T14:33:35+06:00" level=info msg="sql/home/caffeines/work/src/github.com/caffeines/choto/data/url_impl.go:31753.191µsSELECT * FROM \"Urls\"  WHERE (id = $1) ORDER BY \"Urls\".\"id\" ASC LIMIT 1[4pmH3W] 1" source="gorm@v1.9.15/main.go:github.com/jinzhu/gorm.(*DB).print:873"
 time="2020-09-18T14:33:35+06:00" level=info msg="2020-09-18 14:33:35.830 - GET /api/4pmH3W 200 ~ 929.807µs" source="core/response.go:github.com/caffeines/choto/core.printRequest:44"
 time="2020-09-18T14:33:54+06:00" level=info msg="sql/home/caffeines/work/src/github.com/caffeines/choto/data/url_impl.go:22659.846µsINSERT INTO \"Urls\" (\"id\",\"link\",\"password\") VALUES ($1,$2,$3) RETURNING \"Urls\".\"id\"[12345 facebook.com ] 1" source="gorm@v1.9.15/main.go:github.com/jinzhu/gorm.(*DB).print:873"
