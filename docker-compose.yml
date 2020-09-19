@@ -1,6 +1,14 @@
 version: '3.1'
 
 services:
+  choto-backend:
+    image: caffeines/choto:rc
+    # command: ["serve"]
+    restart: always
+    ports:
+      - 4521:4521
+    depends_on:
+      - db
   db:
     image: postgres
     ports:
@@ -12,17 +20,11 @@ services:
       POSTGRES_USER: root
     volumes:
       - "pgvol:/var/lib/postgresql/data"
-  pgAdmin:
+  adminer:
+    image: adminer
+    container_name: choto_adminer
     restart: always
-    image: dpage/pgadmin4
     ports:
-        - "8001:80"
-    environment:
-        PGADMIN_DEFAULT_EMAIL: admin@admin.com
-        PGADMIN_DEFAULT_PASSWORD: 1234
-    volumes:
-        - pgadmin:/var/lib/pgadmin
-  
+      - 8001:8080
 volumes:
   pgvol:
-  pgadmin:

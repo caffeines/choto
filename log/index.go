@@ -1,6 +1,7 @@
 package log
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/caffeines/choto/log/hooks"
@@ -13,7 +14,12 @@ var defLogger *logrus.Logger
 // SetupLog ...
 func SetupLog() {
 	defLogger = logrus.New()
-	defLogger.Out = os.Stdout
+	f, err := os.OpenFile("log.txt", os.O_WRONLY|os.O_CREATE, 0755)
+	if err != nil {
+		fmt.Println(err)
+	}
+	defLogger.SetOutput(f)
+	// defLogger.Out = os.Stdout
 	defLogger.AddHook(hooks.NewHook())
 }
 

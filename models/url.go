@@ -1,12 +1,13 @@
 package models
 
-// Url schema
-type Url struct {
+// URL schema
+type URL struct {
 	ID       string `json:"id" gorm:"column:id;primary_key"`
 	Link     string `json:"link" gorm:"column:link;not_null"`
 	Password string `json:"password" gorm:"column:password"`
 }
 
-func (u *Url) TableName() string {
+// TableName  return URL table name
+func (u *URL) TableName() string {
 	return "Urls"
 }
